@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voters</title>
+    <link rel="stylesheet" href="/statics/index.css">
+</head>
+<body>
+    <h1>Voters Management</h1>
+
+    <h2>Add Voter</h2>
+    <form action="/voters/add" method="POST">
+        First Name: <input type="text" name="fname" required><br>
+        Middle Name: <input type="text" name="mname"><br>
+        Last Name: <input type="text" name="lname" required><br>
+        Password: <input type="text" name="password" required><br>
+        Status:
+        <select name="stat">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>Existing Voters</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Full Name</th><th>Password</th><th>Status</th><th>Voted</th><th>Update</th>
+        </tr>
+        {% for v in voters %}
+        <tr>
+            <td>{{ v[0] }}</td>
+            <td>{{ v[2] }} {{ v[3] }} {{ v[4] }}</td>
+            <td>{{ v[1] }}</td>
+            <td>{{ v[5] }}</td>
+            <td>{{ v[6] }}</td>
+            <td>
+                <form action="/voters/update" method="POST" style="display:inline">
+                    <input type="hidden" name="vid" value="{{ v[0] }}">
+                    First Name: <input type="text" name="fname" value="{{ v[2] }}">
+                    Middle Name: <input type="text" name="mname" value="{{ v[3] }}">
+                    Last Name: <input type="text" name="lname" value="{{ v[4] }}">
+                    Password: <input type="text" name="password" value="{{ v[1] }}">
+                    Status:
+                    <select name="stat">
+                        <option value="active" {% if v[5] == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if v[5] == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+                {% if v[5] == 'active' %}
+                <form action="/voters/deactivate" method="POST" style="display:inline">
+                    <input type="hidden" name="vid" value="{{ v[0] }}">
+                    <button type="submit">Deactivate</button>
+                </form>
+                {% else %}
+                <form action="/voters/activate" method="POST" style="display:inline">
+                    <input type="hidden" name="vid" value="{{ v[0] }}">
+                    <button type="submit">Activate</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><a href="/">Back to Home</a>
+</body>
+</html>

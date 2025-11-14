@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vote</title>
+    <link rel="stylesheet" href="/statics/index.css">
+</head>
+<body>
+    <h1>Cast Your Vote</h1>
+    <form action="/vote/submit" method="POST">
+        <input type="hidden" name="voter_id" value="{{ voter_id }}">
+        {% for pos_id, pos in positions.items() %}
+            <h3>{{ pos.name }} (Select up to {{ pos.num }})</h3>
+            {% for cand in pos.candidates %}
+                <input type="checkbox" name="pos_{{ pos_id }}" value="{{ cand[0] }}">
+                {{ cand[1] }}<br>
+            {% endfor %}
+        {% endfor %}
+        <br><button type="submit">Submit Vote</button>
+    </form>
+    <br><a href="/">Back to Home</a>
+</body>
+</html>

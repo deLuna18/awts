@@ -1,0 +1,23 @@
+body { font-family: Arial, sans-serif; background: #f7d9d9; margin: 0; padding: 0; }
+
+h1, h2 { color: #333; text-align: center; margin-top: 20px; }
+
+table { border-collapse: collapse; width: 80%; margin: 20px auto; background: #fff; }
+
+th, td { border: 1px solid #ddd; padding: 8px 12px; }
+
+th { background-color: #4CAF50; color: white; }
+
+tr:nth-child(even) { background-color: #f2f2f2; }
+
+form { margin: 10px auto; width: 80%; background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px #ccc; }
+
+input[type="text"], input[type="number"], select { width: 60%; padding: 8px; margin: 6px 0; border: 1px solid #ccc; border-radius: 2px; }
+
+button { background-color: #4CAF50; color: white; padding: 8px 16px; margin: 6px 2px; border: none; border-radius: 2px; cursor: pointer; }
+
+button:hover { background-color: #45a049; }
+
+a { color: #4CAF50; text-decoration: none; margin-left: 20px; }
+
+a:hover { text-decoration: underline; }

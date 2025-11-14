@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Positions</title>
+    <link rel="stylesheet" href="/statics/index.css">
+</head>
+<body>
+    <h1>Positions Management</h1>
+
+    <h2>Add Position</h2>
+    <form action="/positions/add" method="POST">
+        Name: <input type="text" name="name" required><br>
+        Number of Positions: <input type="number" name="num_of_positions" required><br>
+        Status:
+        <select name="stat">
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+        </select>
+        <button type="submit">Add</button>
+    </form>
+    
+    <h2>Existing Positions</h2>
+    <table>
+        <tr>
+            <th>ID</th><th>Name</th><th>Number of Positions</th><th>Status</th><th>Update</th>
+        </tr>
+        {% for p in positions %}
+        <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+            <td>{{ p[2] }}</td>
+            <td>{{ p[3] }}</td>
+            <td>
+                <form action="/positions/update" method="POST">
+                    <input type="hidden" name="pid" value="{{ p[0] }}">
+                    Name: <input type="text" name="name" value="{{ p[1] }}">
+                    Number of Positions: <input type="number" name="num_of_positions" value="{{ p[2] }}">
+                    Status:
+                    <select name="stat">
+                        <option value="open" {% if p[3] == 'open' %}selected{% endif %}>Open</option>
+                        <option value="closed" {% if p[3] == 'closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+                {% if p[3] == 'open' %}
+                <form action="/positions/deactivate" method="POST" style="display:inline">
+                    <input type="hidden" name="pid" value="{{ p[0] }}">
+                    <button type="submit">Deactivate</button>
+                </form>
+                {% else %}
+                <form action="/positions/activate" method="POST" style="display:inline">
+                    <input type="hidden" name="pid" value="{{ p[0] }}">
+                    <button type="submit">Activate</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><a href="/">Back to Home</a>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Election Winners</title>
+    <link rel="stylesheet" href="/statics/index.css">
+</head>
+<body>
+    <h1>Election Winners</h1>
+
+    <table>
+        <tr><th>Position</th><th>Winner</th><th>Total Votes</th></tr>
+        {% for w in winners %}
+        <tr>
+            <td>{{ w[0] }}</td>
+            <td>{{ w[1] }}</td>
+            <td>{{ w[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><a href="/">Back to Home</a>
+</body>
+</html>

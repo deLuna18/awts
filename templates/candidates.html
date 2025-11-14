@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/statics/index.css">
+    <title>Candidates</title>
+</head>
+<body>
+    <h1>Candidates Management</h1>
+
+    <h2>Add Candidate</h2>
+    <form action="/candidates/add" method="POST">
+        First Name: <input type="text" name="fname" required><br>
+        Middle Name: <input type="text" name="mname"><br>
+        Last Name: <input type="text" name="lname" required><br>
+        Position:
+        <select name="pos" required>
+            {# Only open positions are shown, as filtered in app.py #}
+            {% for pos in positions %}
+            <option value="{{ pos[0] }}">{{ pos[1] }}</option>
+            {% endfor %}
+        </select>
+        Status:
+        <select name="stat">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>Existing Candidates</h2>
+    <table>
+        <tr><th>ID</th><th>Full Name</th><th>Position</th><th>Status</th><th>Update</th></tr>
+        {% for c in candidates %}
+        <tr>
+            <td>{{ c[0] }}</td>
+            <td>{{ c[1] }} {{ c[2] }} {{ c[3] }}</td>
+            <td>{{ c[4] }}</td>
+            <td>{{ c[5] }}</td>
+            <td>
+                <form action="/candidates/update" method="POST">
+                    <input type="hidden" name="cid" value="{{ c[0] }}">
+                    First Name: <input type="text" name="fname" value="{{ c[1] }}" required>
+                    Middle Name: <input type="text" name="mname" value="{{ c[2] }}">
+                    Last Name: <input type="text" name="lname" value="{{ c[3] }}" required>
+                    Position:
+                    <select name="pos">
+                        {% for pos in positions %}
+                        <option value="{{ pos[0] }}">{{ pos[1] }}</option>
+                        {% endfor %}
+                    </select>
+                    Status:
+                    <select name="stat">
+                        <option value="active" {% if c[5] == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if c[5] == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+                {% if c[5] == 'active' %}
+                <form action="/candidates/deactivate" method="POST" style="display:inline">
+                    <input type="hidden" name="cid" value="{{ c[0] }}">
+                    <button type="submit">Deactivate</button>
+                </form>
+                {% else %}
+                <form action="/candidates/activate" method="POST" style="display:inline">
+                    <input type="hidden" name="cid" value="{{ c[0] }}">
+                    <button type="submit">Activate</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br><a href="/">Back to Home</a>
+</body>
+</html>
