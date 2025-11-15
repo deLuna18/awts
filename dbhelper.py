@@ -2,19 +2,10 @@ import sqlite3
 
 DB_NAME = "election.db"
 
-# ---------------------------------------------------
-# CONNECT FUNCTION (used by all other functions)
-# ---------------------------------------------------
 def get_connection():
-    # enable row access by name if you want: sqlite3.Row
     conn = sqlite3.connect(DB_NAME)
     return conn
 
-
-# ---------------------------------------------------
-# INITIAL DATABASE SETUP (RUNS AUTOMATICALLY ON IMPORT)
-# includes migration to add voterActive column if missing
-# ---------------------------------------------------
 def init_db():
     conn = get_connection()
     cur = conn.cursor()
@@ -71,10 +62,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-
-# ---------------------------------------------------
-# CRUD FUNCTIONS (Positions)
-# ---------------------------------------------------
+# POSITION
 def add_position(name, num_of_positions, stat):
     conn = get_connection()
     cur = conn.cursor()
@@ -87,14 +75,14 @@ def add_position(name, num_of_positions, stat):
 def update_position(pid, name=None, num_of_positions=None, stat=None):
     conn = get_connection()
     cur = conn.cursor()
-    # Fetch current values
+
     cur.execute("SELECT posName, numOfPositions, posStat FROM positions WHERE posID=?", (pid,))
     row = cur.fetchone()
     if not row:
         conn.close()
         return
     current_name, current_num, current_stat = row
-    # Use current values if None is passed
+
     name = name if name is not None else current_name
     num_of_positions = num_of_positions if num_of_positions is not None else current_num
     stat = stat if stat is not None else current_stat
@@ -104,10 +92,7 @@ def update_position(pid, name=None, num_of_positions=None, stat=None):
     conn.commit()
     conn.close()
 
-
-# ---------------------------------------------------
-# CRUD FUNCTIONS (Candidates)
-# ---------------------------------------------------
+# CANDIDATES
 def add_candidate(fname, mname, lname, position_id, stat='active'):
     conn = get_connection()
     cur = conn.cursor()
@@ -120,7 +105,7 @@ def add_candidate(fname, mname, lname, position_id, stat='active'):
 def update_candidate(cid, fname, mname, lname, position_id, stat):
     conn = get_connection()
     cur = conn.cursor()
-    # Fetch current values if any argument is None
+
     cur.execute("SELECT candFName, candMName, candLName, posID, candStat FROM candidates WHERE candID=?", (cid,))
     row = cur.fetchone()
     if not row:
@@ -138,10 +123,7 @@ def update_candidate(cid, fname, mname, lname, position_id, stat):
     conn.commit()
     conn.close()
 
-
-# ---------------------------------------------------
-# CRUD FUNCTIONS (Voters)
-# ---------------------------------------------------
+# VOTERS
 def add_voter(password, fname, mname, lname, stat='active', voted='n'):
     conn = get_connection()
     cur = conn.cursor()
@@ -161,10 +143,7 @@ def update_voter(vid, password, fname, mname, lname, stat):
     conn.close()
 
 
-# ---------------------------------------------------
-# LOGIN FUNCTION (now checks active + voted)
-# returns a tuple (voterID, voterStat, voterActive) or None
-# ---------------------------------------------------
+
 def validate_voter_login(voter_id, password):
     conn = get_connection()
     cur = conn.cursor()
@@ -172,12 +151,10 @@ def validate_voter_login(voter_id, password):
                 (voter_id, password))
     result = cur.fetchone()
     conn.close()
-    return result  # None or (voterID, voterStat, voted)
+    return result  
 
 
-# ---------------------------------------------------
-# VOTING FUNCTION
-# ---------------------------------------------------
+# VOTING
 def cast_vote(position_id, voter_id, candidate_id):
     conn = get_connection()
     cur = conn.cursor()
@@ -196,9 +173,7 @@ def mark_voter_as_voted(voter_id):
     conn.close()
 
 
-# ---------------------------------------------------
-# RESULTS FUNCTIONS
-# ---------------------------------------------------
+# RESULTS
 def get_results():
     conn = get_connection()
     cur = conn.cursor()
@@ -216,14 +191,14 @@ def get_results():
 def get_results_with_percent():
     conn = get_connection()
     cur = conn.cursor()
-    # Get total votes per position
+
     cur.execute("""
         SELECT posID, SUM(votes) as total_votes
         FROM candidates
         GROUP BY posID
     """)
     totals = {row[0]: row[1] for row in cur.fetchall()}
-    # Get candidate results
+
     cur.execute("""
         SELECT candidates.candFName || ' ' || candidates.candLName AS candName,
                positions.posName,
@@ -243,16 +218,14 @@ def get_results_with_percent():
     return results
 
 
-# ---------------------------------------------------
-# HELPER FUNCTIONS
-# ---------------------------------------------------
+# HELPERS
 def get_voter_info(voter_id):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("SELECT voterID, voterStat, voted FROM voters WHERE voterID=?", (voter_id,))
     result = cur.fetchone()
     conn.close()
-    return result  # (voterID, voterStat, voted)
+    return result  
 
 def get_num_of_positions(pos_id):
     conn = get_connection()
@@ -270,5 +243,4 @@ def get_position_name(pos_id):
     conn.close()
     return result[0] if result else ""
 
-# Run database initializer on import
 init_db()

@@ -3,18 +3,12 @@ import dbhelper
 
 app = Flask(__name__, static_folder='statics')
 
-
-# -------------------------------------------------
 # HOME
-# -------------------------------------------------
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# -------------------------------------------------
 # POSITIONS
-# -------------------------------------------------
 @app.route("/positions")
 def positions():
     conn = dbhelper.get_connection()
@@ -44,9 +38,7 @@ def update_position():
     return redirect("/positions")
 
 
-# -------------------------------------------------
 # CANDIDATES
-# -------------------------------------------------
 @app.route("/candidates")
 def candidates():
     conn = dbhelper.get_connection()
@@ -57,7 +49,7 @@ def candidates():
         JOIN positions p ON c.posID = p.posID
     """)
     data = cur.fetchall()
-    # Only fetch positions that are open
+
     cur.execute("SELECT posID, posName FROM positions WHERE posStat='open'")
     positions = cur.fetchall()
     conn.close()
@@ -91,7 +83,7 @@ def update_candidate():
 def candidates_deactivate():
     cid = request.form.get("cid")
     if cid:
-        # Only update candStat to 'inactive', keep other fields unchanged
+
         dbhelper.update_candidate(cid, None, None, None, None, "inactive")
     return redirect("/candidates")
 
@@ -100,14 +92,10 @@ def candidates_deactivate():
 def candidates_activate():
     cid = request.form.get("cid")
     if cid:
-        # Only update candStat to 'active', keep other fields unchanged
         dbhelper.update_candidate(cid, None, None, None, None, "active")
     return redirect("/candidates")
 
-
-# -------------------------------------------------
 # VOTERS
-# -------------------------------------------------
 @app.route("/voters")
 def voters():
     conn = dbhelper.get_connection()
@@ -157,9 +145,7 @@ def voters_activate():
     return redirect("/voters")
 
 
-# -------------------------------------------------
 # VOTING
-# -------------------------------------------------
 @app.route("/vote/login", methods=["GET", "POST"])
 def vote_login():
     if request.method == "GET":
@@ -215,44 +201,39 @@ def vote_page(voter_id):
 @app.route("/vote/submit", methods=["POST"])
 def submit_vote():
     voter_id = request.form["voter_id"]
-    # Check if voter is active and hasn't voted
+
     voter_info = dbhelper.get_voter_info(voter_id)
     if not voter_info or voter_info[1] != "active":
         return "Your account is inactive. Please contact administrator."
     if voter_info[2] == "y":
         return "You already voted."
 
-    # For each position, get selected candidate(s)
     votes = []
     for key in request.form:
         if key.startswith("pos_"):
             pos_id = key.split("_")[1]
             cand_ids = request.form.getlist(key)
-            # Check voting limit for this position
+
             num_allowed = dbhelper.get_num_of_positions(pos_id)
             if len(cand_ids) > num_allowed:
                 return f"Too many votes for position {dbhelper.get_position_name(pos_id)} (max {num_allowed})"
             for cand_id in cand_ids:
                 votes.append((pos_id, voter_id, cand_id))
-    # Record votes
+
     for pos_id, voter_id, cand_id in votes:
         dbhelper.cast_vote(pos_id, voter_id, cand_id)
     dbhelper.mark_voter_as_voted(voter_id)
     return "Vote submitted successfully!"
 
 
-# -------------------------------------------------
 # RESULTS
-# -------------------------------------------------
 @app.route("/results")
 def results():
     rows = dbhelper.get_results_with_percent()
     return render_template("results.html", results=rows)
 
 
-# -------------------------------------------------
 # WINNERS
-# -------------------------------------------------
 @app.route("/winners")
 def winners():
     conn = dbhelper.get_connection()
@@ -288,8 +269,5 @@ def positions_activate():
     return redirect("/positions")
 
 
-# -------------------------------------------------
-# RUN FLASK
-# -------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
