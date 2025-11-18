@@ -3,26 +3,27 @@
 <head>
     <title>Voters</title>
     <link rel="stylesheet" href="/statics/index.css">
+    <link rel="stylesheet" href="/statics/w3.css">
 </head>
 <body>
-    <h1>Voters Management</h1>
+    <h1 class="w3-text-teal">Voters Management</h1>
 
     <h2>Add Voter</h2>
-    <form action="/voters/add" method="POST">
-        First Name: <input type="text" name="fname" required><br>
-        Middle Name: <input type="text" name="mname"><br>
-        Last Name: <input type="text" name="lname" required><br>
-        Password: <input type="text" name="password" required><br>
+    <form action="/voters/add" method="POST" class="w3-box w3-padding">
+        First Name: <input type="text" name="fname" required class="w3-input"><br>
+        Middle Name: <input type="text" name="mname" class="w3-input"><br>
+        Last Name: <input type="text" name="lname" required class="w3-input"><br>
+        Password: <input type="text" name="password" required class="w3-input"><br>
         Status:
-        <select name="stat">
+        <select name="stat" class="w3-select">
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
         </select>
-        <button type="submit">Add</button>
+        <button type="submit" class="w3-button w3-teal w3-margin-top">Add</button>
     </form>
 
     <h2>Existing Voters</h2>
-    <table>
+    <table class="w3-table-all w3-bordered w3-hoverable">
         <tr>
             <th>ID</th><th>Full Name</th><th>Password</th><th>Status</th><th>Voted</th><th>Update</th>
         </tr>
@@ -36,37 +37,37 @@
             <td>
                 <form action="/voters/update" method="POST" style="display:inline">
                     <input type="hidden" name="vid" value="{{ v[0] }}">
-                    First Name: <input type="text" name="fname" value="{{ v[2] }}">
-                    Middle Name: <input type="text" name="mname" value="{{ v[3] }}">
-                    Last Name: <input type="text" name="lname" value="{{ v[4] }}">
-                    Password: <input type="text" name="password" value="{{ v[1] }}">
+                    First Name: <input type="text" name="fname" value="{{ v[2] }}" class="w3-input">
+                    Middle Name: <input type="text" name="mname" value="{{ v[3] }}" class="w3-input">
+                    Last Name: <input type="text" name="lname" value="{{ v[4] }}" class="w3-input">
+                    Password: <input type="text" name="password" value="{{ v[1] }}" class="w3-input">
                     Status:
-                    <select name="stat">
+                    <select name="stat" class="w3-select">
                         <option value="active" {% if v[5] == 'active' %}selected{% endif %}>Active</option>
                         <option value="inactive" {% if v[5] == 'inactive' %}selected{% endif %}>Inactive</option>
                     </select>
-                    <button type="submit">Update</button>
+                    <button type="submit" class="w3-button w3-teal">Update</button>
                 </form>
                 {% if v[5] == 'active' %}
                 <form action="/voters/deactivate" method="POST" style="display:inline">
                     <input type="hidden" name="vid" value="{{ v[0] }}">
-                    <button type="submit">Deactivate</button>
+                    <button type="submit" class="w3-button w3-red">Deactivate</button>
                 </form>
                 {% else %}
                 <form action="/voters/activate" method="POST" style="display:inline">
                     <input type="hidden" name="vid" value="{{ v[0] }}">
-                    <button type="submit">Activate</button>
+                    <button type="submit" class="w3-button w3-green">Activate</button>
                 </form>
                 {% endif %}
                 <form action="/voters/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this voter?');">
                     <input type="hidden" name="vid" value="{{ v[0] }}">
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="w3-button w3-red">Delete</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </table>
 
-    <br><a href="/">Back to Home</a>
+    <br><a href="/" class="w3-button w3-light-grey">Back to Home</a>
 </body>
 </html>

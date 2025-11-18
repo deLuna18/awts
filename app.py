@@ -38,6 +38,14 @@ def update_position():
     return redirect("/positions")
 
 
+@app.route("/positions/delete", methods=["POST"])
+def positions_delete():
+    pid = request.form.get("pid")
+    if pid:
+        dbhelper.delete_position(pid)
+    return redirect("/positions")
+
+
 # CANDIDATES
 @app.route("/candidates")
 def candidates():
@@ -95,6 +103,15 @@ def candidates_activate():
         dbhelper.update_candidate(cid, None, None, None, None, "active")
     return redirect("/candidates")
 
+
+@app.route("/candidates/delete", methods=["POST"])
+def candidates_delete():
+    cid = request.form.get("cid")
+    if cid:
+        dbhelper.delete_candidate(cid)
+    return redirect("/candidates")
+
+
 # VOTERS
 @app.route("/voters")
 def voters():
@@ -142,6 +159,14 @@ def voters_activate():
     vid = request.form.get("vid")
     if vid:
         dbhelper.update_voter(vid, None, None, None, None, "active")
+    return redirect("/voters")
+
+
+@app.route("/voters/delete", methods=["POST"])
+def voters_delete():
+    vid = request.form.get("vid")
+    if vid:
+        dbhelper.delete_voter(vid)
     return redirect("/voters")
 
 

@@ -92,6 +92,13 @@ def update_position(pid, name=None, num_of_positions=None, stat=None):
     conn.commit()
     conn.close()
 
+def delete_position(pid):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM positions WHERE posID=?", (pid,))
+    conn.commit()
+    conn.close()
+
 # CANDIDATES
 def add_candidate(fname, mname, lname, position_id, stat='active'):
     conn = get_connection()
@@ -123,6 +130,13 @@ def update_candidate(cid, fname, mname, lname, position_id, stat):
     conn.commit()
     conn.close()
 
+def delete_candidate(cid):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM candidates WHERE candID=?", (cid,))
+    conn.commit()
+    conn.close()
+
 # VOTERS
 def add_voter(password, fname, mname, lname, stat='active', voted='n'):
     conn = get_connection()
@@ -142,7 +156,12 @@ def update_voter(vid, password, fname, mname, lname, stat):
     conn.commit()
     conn.close()
 
-
+def delete_voter(vid):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM voters WHERE voterID=?", (vid,))
+    conn.commit()
+    conn.close()
 
 def validate_voter_login(voter_id, password):
     conn = get_connection()

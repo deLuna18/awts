@@ -2,33 +2,34 @@
 <html>
 <head>
     <link rel="stylesheet" href="/statics/index.css">
+    <link rel="stylesheet" href="/statics/w3.css">
     <title>Candidates</title>
 </head>
 <body>
-    <h1>Candidates Management</h1>
+    <h1 class="w3-text-indigo">Candidates Management</h1>
 
     <h2>Add Candidate</h2>
-    <form action="/candidates/add" method="POST">
-        First Name: <input type="text" name="fname" required><br>
-        Middle Name: <input type="text" name="mname"><br>
-        Last Name: <input type="text" name="lname" required><br>
+    <form action="/candidates/add" method="POST" class="w3-box w3-padding">
+        First Name: <input type="text" name="fname" required class="w3-input"><br>
+        Middle Name: <input type="text" name="mname" class="w3-input"><br>
+        Last Name: <input type="text" name="lname" required class="w3-input"><br>
         Position:
-        <select name="pos" required>
+        <select name="pos" required class="w3-select">
             {# Only open positions are shown, as filtered in app.py #}
             {% for pos in positions %}
             <option value="{{ pos[0] }}">{{ pos[1] }}</option>
             {% endfor %}
         </select>
         Status:
-        <select name="stat">
+        <select name="stat" class="w3-select">
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
         </select>
-        <button type="submit">Add</button>
+        <button type="submit" class="w3-button w3-indigo w3-margin-top">Add</button>
     </form>
 
     <h2>Existing Candidates</h2>
-    <table>
+    <table class="w3-table-all w3-bordered w3-hoverable">
         <tr><th>ID</th><th>Full Name</th><th>Position</th><th>Status</th><th>Update</th></tr>
         {% for c in candidates %}
         <tr>
@@ -39,17 +40,17 @@
             <td>
                 <form action="/candidates/update" method="POST">
                     <input type="hidden" name="cid" value="{{ c[0] }}">
-                    First Name: <input type="text" name="fname" value="{{ c[1] }}" required>
-                    Middle Name: <input type="text" name="mname" value="{{ c[2] }}">
-                    Last Name: <input type="text" name="lname" value="{{ c[3] }}" required>
+                    First Name: <input type="text" name="fname" value="{{ c[1] }}" required class="w3-input">
+                    Middle Name: <input type="text" name="mname" value="{{ c[2] }}" class="w3-input">
+                    Last Name: <input type="text" name="lname" value="{{ c[3] }}" required class="w3-input">
                     Position:
-                    <select name="pos">
+                    <select name="pos" class="w3-select">
                         {% for pos in positions %}
                         <option value="{{ pos[0] }}">{{ pos[1] }}</option>
                         {% endfor %}
                     </select>
                     Status:
-                    <select name="stat">
+                    <select name="stat" class="w3-select">
                         <option value="active" {% if c[5] == 'active' %}selected{% endif %}>Active</option>
                         <option value="inactive" {% if c[5] == 'inactive' %}selected{% endif %}>Inactive</option>
                     </select>
@@ -75,6 +76,6 @@
         {% endfor %}
     </table>
 
-    <br><a href="/">Back to Home</a>
+    <br><a href="/" class="w3-button w3-light-grey">Back to Home</a>
 </body>
 </html>

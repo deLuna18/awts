@@ -3,11 +3,12 @@
 <head>
     <title>Election Results</title>
     <link rel="stylesheet" href="/statics/index.css">
+    <link rel="stylesheet" href="/statics/w3.css">
 </head>
 <body>
-    <h1>Election Results</h1>
+    <h1 class="w3-text-purple">Election Results</h1>
 
-    <table>
+    <table class="w3-table-all w3-bordered w3-hoverable">
         <tr><th>Candidate</th><th>Position</th><th>Votes</th><th>Voting %</th></tr>
         {% for r in results %}
         <tr>
@@ -19,6 +20,6 @@
         {% endfor %}
     </table>
 
-    <br><a href="/">Back to Home</a>
+    <br><a href="/" class="w3-button w3-light-grey">Back to Home</a>
 </body>
 </html>
