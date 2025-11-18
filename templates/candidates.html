@@ -66,6 +66,10 @@
                     <button type="submit">Activate</button>
                 </form>
                 {% endif %}
+                <form action="/candidates/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this candidate?');">
+                    <input type="hidden" name="cid" value="{{ c[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% endfor %}

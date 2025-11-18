@@ -201,27 +201,13 @@ def vote_page(voter_id):
 @app.route("/vote/submit", methods=["POST"])
 def submit_vote():
     voter_id = request.form["voter_id"]
-
-    voter_info = dbhelper.get_voter_info(voter_id)
-    if not voter_info or voter_info[1] != "active":
-        return "Your account is inactive. Please contact administrator."
-    if voter_info[2] == "y":
-        return "You already voted."
-
-    votes = []
-    for key in request.form:
-        if key.startswith("pos_"):
-            pos_id = key.split("_")[1]
-            cand_ids = request.form.getlist(key)
-
-            num_allowed = dbhelper.get_num_of_positions(pos_id)
-            if len(cand_ids) > num_allowed:
-                return f"Too many votes for position {dbhelper.get_position_name(pos_id)} (max {num_allowed})"
-            for cand_id in cand_ids:
-                votes.append((pos_id, voter_id, cand_id))
-
-    for pos_id, voter_id, cand_id in votes:
-        dbhelper.cast_vote(pos_id, voter_id, cand_id)
+    info = dbhelper.get_voter_info(voter_id)
+    if not info or info[1] != "active" or info[2] == "y": return "Your account is inactive or already voted."
+    for k in request.form: 
+        if k.startswith("pos_"):
+            ids = request.form.getlist(k)
+            if len(ids) > dbhelper.get_num_of_positions(k.split("_")[1]): return "Too many votes."
+            for cid in ids: dbhelper.cast_vote(k.split("_")[1], voter_id, cid)
     dbhelper.mark_voter_as_voted(voter_id)
     return "Vote submitted successfully!"
 
@@ -229,27 +215,18 @@ def submit_vote():
 # RESULTS
 @app.route("/results")
 def results():
-    rows = dbhelper.get_results_with_percent()
-    return render_template("results.html", results=rows)
+    return render_template("results.html", results=dbhelper.get_results_with_percent())
 
 
 # WINNERS
 @app.route("/winners")
 def winners():
     conn = dbhelper.get_connection()
-    cur = conn.cursor()
-
-    cur.execute("""
+    data = conn.execute("""
         SELECT p.posName, c.candFName || ' ' || c.candMName || ' ' || c.candLName, MAX(c.votes)
-        FROM candidates c
-        JOIN positions p ON c.posID = p.posID
-        GROUP BY c.posID
-        ORDER BY MAX(c.votes) DESC
-    """)
-
-    data = cur.fetchall()
+        FROM candidates c JOIN positions p ON c.posID = p.posID GROUP BY c.posID ORDER BY MAX(c.votes) DESC
+    """).fetchall()
     conn.close()
-
     return render_template("winners.html", winners=data)
 
 

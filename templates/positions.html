@@ -53,6 +53,10 @@
                     <button type="submit">Activate</button>
                 </form>
                 {% endif %}
+                <form action="/positions/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this position?');">
+                    <input type="hidden" name="pid" value="{{ p[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% endfor %}

@@ -58,6 +58,10 @@
                     <button type="submit">Activate</button>
                 </form>
                 {% endif %}
+                <form action="/voters/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this voter?');">
+                    <input type="hidden" name="vid" value="{{ v[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
